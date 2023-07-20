@@ -2,6 +2,8 @@
 
 namespace Offseat\GridField;
 
+use Offseat\Utils\FileSizeFormat;
+use SilverStripe\Core\Extensible;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use SilverStripe\ORM\FieldType\DBInt;
@@ -16,6 +18,7 @@ use SilverStripe\Forms\GridField\GridField_HTMLProvider;
 
 class GridFieldSummaryRow implements GridField_HTMLProvider
 {
+    use Extensible;
     use Configurable;
 
     /**
@@ -89,6 +92,9 @@ class GridFieldSummaryRow implements GridField_HTMLProvider
                 $obj = clone $field;
                 if ($db[$column] == 'Money') {
                     $summary_value = $list->sum($column . 'Amount');
+                } elseif ($column == 'FileSize') {
+                    $obj = DBText::create('FileSize');
+                    $summary_value = FileSizeFormat::bytes2memnicestring($list->sum($column));
                 } else {
                     $summary_value = $list->sum($column);
                 }
